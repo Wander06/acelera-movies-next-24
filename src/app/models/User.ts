@@ -1,11 +1,14 @@
 // FILE: @/app/models/User.ts
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column()
+  @Column({name: "email", type: 'varchar'})
   email?: string;
+
+  @Column({name: "password", type: 'varchar'})
+  password?: string;
 }
