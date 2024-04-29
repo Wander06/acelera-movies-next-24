@@ -1,7 +1,7 @@
 // FILE: @/app/api/get-all-users/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getDBConnection } from '@/app/database/connection';
 import { Movie } from '@/app/models/Movie';
+import { getDBConnection } from '@/app/database/connection';
 
 export const GET = async () => {
   const connection = await getDBConnection();
@@ -16,7 +16,6 @@ export const GET = async () => {
     if(!movieRepository){
       return NextResponse.json({message: "Nenhum filme encontrado"}, {status: 404})
     }
-    console.log(movieRepository)
     return NextResponse.json(movieRepository, {status: 200});
   } catch (error) {
     return NextResponse.json({message: "Erro interno do servidor"}, {status: 500})
@@ -27,38 +26,37 @@ export const GET = async () => {
 export const POST = async (req: Request) =>{
   const connection = await getDBConnection();
   try {
-    const data = await req.json()
+    const body = await req.json()
 
-    if(!data){
-       return NextResponse.json({message: "Nenhum dado fornecido"}, {status: 204})
+    if (Object.keys(body).length == 0 || Object.values(body).some((value:any) => !value.trim())) {
+      return NextResponse.json({ message: "Nenhum dado fornecido ou dados em branco" }, { status: 400 });
     }
 
     const movieRepository = connection.getRepository(Movie)
     const createMovie = movieRepository.create({ 
-      title: data.title,
-      gender: data.gender, 
-      classification: data.classification , 
-      subtitle: data.subtitle, 
-      image: data.image, 
-      releaseDate: data.releaseDate, 
-      director: data.director, 
-      writer: data.writer, 
-      studio: data.studio, 
-      actors: data.actors, 
-      resume: data.resume, 
-      awards: data.awards, 
-      note: data.note
+      title: body.title,
+      gender: body.gender, 
+      classification: body.classification , 
+      subtitle: body.subtitle, 
+      image: body.image, 
+      releaseDate: body.releaseDate, 
+      director: body.director, 
+      writer: body.writer, 
+      studio: body.studio, 
+      actors: body.actors, 
+      resume: body.resume, 
+      awards: body.awards, 
+      note: body.note
     })
     if(!createMovie){ 
-    return NextResponse.json({message: "falha"}, {status:500})
+    return NextResponse.json({message: "Falha ao criar filme"}, {status:500})
     }
 
     await movieRepository.save(createMovie)
 
-    return NextResponse.json({message: "sucesso"}, {status:200})
+    return NextResponse.json({message: "Filme criado com sucesso"}, {status:200})
 
   } catch (error) {
-    console.error("Algo deu errado: ", error)
     return NextResponse.json({message: "Erro interno do servidor"}, {status: 500})
   }
 }

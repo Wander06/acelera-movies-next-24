@@ -21,7 +21,6 @@ export async function POST(req:Request) {
         return Response.json({ auth: true, message:"Sucesso"}, { status: 200 })
     
     } catch (error) {
-        console.error('Erro:', error);
         return Response.json({ message: "Internal Server Error"}, {status: 500})
     }
 }
