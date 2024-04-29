@@ -2,6 +2,9 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity("movies")
 export class Movie {
+  save() {
+    throw new Error('Method not implemented.')
+  }
   @PrimaryGeneratedColumn()
     id!: number
 
